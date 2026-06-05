@@ -13,6 +13,17 @@ public class TicketItem
     public decimal Btw { get; set; }
 }
 
+//OPSLAG VAN ENKELE ITEMS//
+public static class ProductCatalogus
+{
+    public static List<TicketItem> Producten = new()
+        {
+            new TicketItem { Barcode = "541001", Naam = "Doritos 250G", Prijs = 2.99m, Btw = 21 },
+            new TicketItem { Barcode = "541002", Naam = "Pannekoeken", Prijs = 3.25m, Btw = 21 },
+            new TicketItem { Barcode = "541003", Naam = "Bulldog Gin 500ml", Prijs = 20.00m, Btw = 21 }
+        };
+}
+
 public class Program
 {
     public static void Main(string[] args)
