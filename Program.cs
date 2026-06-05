@@ -3,6 +3,16 @@ using BetaalSysteemMock;
 
 namespace KassaApp;
 
+//ITEMS OP HET TICKET//
+public class TicketItem
+{
+    public string Barcode { get; set; }
+    public string Naam { get; set; }
+    public int Aantal { get; set; }
+    public decimal Prijs { get; set; }
+    public decimal Btw { get; set; }
+}
+
 public class Program
 {
     public static void Main(string[] args)
