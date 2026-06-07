@@ -1,0 +1,56 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "KassaApp/1.0.0": {
+        "dependencies": {
+          "BetaalSysteemMock": "1.0.0",
+          "WinkelDomein": "1.0.0"
+        },
+        "runtime": {
+          "KassaApp.dll": {}
+        }
+      },
+      "BetaalSysteemMock/1.0.0": {
+        "dependencies": {
+          "WinkelDomein": "1.0.0"
+        },
+        "runtime": {
+          "BetaalSysteemMock.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "WinkelDomein/1.0.0": {
+        "runtime": {
+          "WinkelDomein.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "KassaApp/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BetaalSysteemMock/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WinkelDomein/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

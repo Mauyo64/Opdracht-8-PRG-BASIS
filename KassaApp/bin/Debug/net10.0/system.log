@@ -1,0 +1,57 @@
+[2026-06-07 21:18:46.028] SCAN: Pannekoeken (541002) toegevoegd aan ticket
+[2026-06-07 21:18:48.367] SCAN: Pannekoeken (541002) - Aantal verhoogd naar 2
+[2026-06-07 21:18:50.256] SCAN: Bulldog Gin 500ml (541003) toegevoegd aan ticket
+[2026-06-07 21:18:54.119] VERWIJDER: Pannekoeken (541002) - Aantal nu 1
+[2026-06-07 21:18:57.208] PARKEREN: Ticket geparkeerd met 2 items
+[2026-06-07 21:19:01.225] HERVATTEN: Ticket #1 teruggehaald met 2 items
+[2026-06-07 21:19:09.209] KAARTBETALING: €149,13 - 2 items op ticket
+[2026-06-07 21:30:38.024] SCAN: Pannekoeken (541002) toegevoegd aan ticket
+[2026-06-07 21:30:44.532] VERWIJDER: Pannekoeken (541002) - Aantal nu 5
+[2026-06-07 21:35:34.769] SCAN: Pannekoeken toegevoegd
+[2026-06-07 21:35:37.506] SCAN: Pannekoeken (+1)
+[2026-06-07 21:35:39.659] UNDO uitgevoerd (Z)
+[2026-06-07 21:35:44.090] UNDO uitgevoerd (Z)
+[2026-06-07 21:38:25.227] SCAN: Pannekoeken toegevoegd
+[2026-06-07 21:38:29.631] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 21:38:31.378] PARKEREN: Ticket geparkeerd met 2 items
+[2026-06-07 21:38:33.967] HERVATTEN: Ticket #1 teruggehaald met 2 items
+[2026-06-07 21:38:45.424] UNDO uitgevoerd (Z)
+[2026-06-07 21:41:50.872] SCAN: Pannekoeken toegevoegd
+[2026-06-07 21:41:52.542] PARKEREN: Ticket geparkeerd met 1 items
+[2026-06-07 21:41:56.029] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 21:41:58.293] UNDO uitgevoerd (Z)
+[2026-06-07 21:42:07.461] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 21:42:08.956] PARKEREN: Ticket geparkeerd met 1 items
+[2026-06-07 21:42:17.422] UNDO uitgevoerd (Z)
+[2026-06-07 21:42:19.741] UNDO uitgevoerd (Z)
+[2026-06-07 21:42:20.637] UNDO uitgevoerd (Z)
+[2026-06-07 21:42:21.621] UNDO uitgevoerd (Z)
+[2026-06-07 22:01:41.933] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:01:43.716] SCAN: Bulldog Gin 500ml (+1)
+[2026-06-07 22:02:17.987] KAARTBETALING: €242,00 - 1 items op ticket
+[2026-06-07 22:11:17.525] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:11:19.644] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:11:28.005] KAARTBETALING: €28,13 - 2 items op ticket
+[2026-06-07 22:11:35.149] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:11:36.845] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:11:39.704] CASHBETALING: €149,13 - 2 items op ticket
+[2026-06-07 22:15:09.555] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:15:11.130] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:15:19.331] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:15:20.721] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:15:22.193] CASHBETALING: €28,13 - 2 items op ticket
+[2026-06-07 22:16:15.739] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:16:48.745] KAARTBETALING: €3,93 - 1 items op ticket
+[2026-06-07 22:17:52.475] SCAN: Pannekoeken toegevoegd
+[2026-06-07 22:17:54.008] SCAN: Pannekoeken (+1)
+[2026-06-07 22:17:56.475] CASHBETALING: €7,87 - 1 items op ticket
+[2026-06-07 22:17:59.630] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 22:18:05.010] KAARTBETALING: €24,20 - 1 items op ticket
+[2026-06-07 23:07:01.403] SCAN: Doritos 250G toegevoegd
+[2026-06-07 23:07:07.355] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 23:07:19.862] UNDO uitgevoerd (Z)
+[2026-06-07 23:07:26.652] PARKEREN: Ticket geparkeerd met 2 items
+[2026-06-07 23:07:32.499] SCAN: Bulldog Gin 500ml toegevoegd
+[2026-06-07 23:07:36.195] CASHBETALING: €145,20 - 1 items op ticket
+[2026-06-07 23:08:02.357] HERVATTEN: Ticket #1 teruggehaald met 2 items
+[2026-06-07 23:08:28.239] KAARTBETALING: €243,13 - 2 items op ticket
