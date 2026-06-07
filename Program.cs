@@ -149,6 +149,7 @@ public class Program
         List<TicketItem> ticket = new List<TicketItem>();
         TicketItem lastItem = null;
         List<List<TicketItem>> geparkeerdeTickets = new();
+        Stack<Action> undoStack = new();
 
         while (true)
         {
@@ -362,14 +363,23 @@ public class Program
 
                 var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
                 if (product != null)
-                {
+                    {
                     var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
+
                     if (existing != null)
                     {
                         existing.Aantal++;
+
+                        undoStack.Push(() =>
+                        {
+                            existing.Aantal--;
+                            if (existing.Aantal <= 0)
+                                ticket.Remove(existing);
+                        });
+
                         lastItem = existing;
-                        Logger.Log($"SCAN: {existing.Naam} ({existing.Barcode}) - Aantal verhoogd naar {existing.Aantal}");
-                }
+                        Logger.Log($"SCAN: {existing.Naam} (+1)");
+                    }
                     else
                     {
                         var newItem = new TicketItem
@@ -380,27 +390,35 @@ public class Program
                             Prijs = product.Prijs,
                             Btw = product.Btw
                         };
+
                         ticket.Add(newItem);
+
+                        undoStack.Push(() =>
+                        {
+                            ticket.Remove(newItem);
+                        });
+
                         lastItem = newItem;
-                        Logger.Log($"SCAN: {newItem.Naam} ({newItem.Barcode}) toegevoegd aan ticket");
-                }
+                        Logger.Log($"SCAN: {newItem.Naam} toegevoegd");
+                    }
+
                     continue;
                 }
 
                 // AANTAL EXTRA TOEVOEGEN//
                 if (int.TryParse(invoer, out int extraAantal))
-                {
-                    if (lastItem != null)
                     {
-                        lastItem.Aantal += extraAantal;
+                        if (lastItem != null)
+                        {
+                            lastItem.Aantal += extraAantal;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                            Console.ReadKey();
+                        }
+                        continue;
                     }
-                    else
-                    {
-                        Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
-                        Console.ReadKey();
-                    }
-                    continue;
-                }
 
                 // TICKET AFBREKEN //
                 if (invoer.Equals("A", StringComparison.OrdinalIgnoreCase))
@@ -420,11 +438,25 @@ public class Program
                     continue;
                 }
 
+                // UNDO //
+                if (invoer.Equals("Z", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (undoStack.Count == 0)
+                    {
+                        Console.WriteLine("Niets om ongedaan te maken.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    undoStack.Pop().Invoke();
+
+                    Logger.Log("UNDO uitgevoerd (Z)");
+                    continue;
+                }
+
 
 
             }
         }
     }
-
-
 
