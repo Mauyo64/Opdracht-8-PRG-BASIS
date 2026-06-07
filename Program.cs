@@ -305,16 +305,22 @@ public class Program
                         continue;
                     }
 
-                    geparkeerdeTickets.Add(
-                        ticket.Select(x => new TicketItem
-                        {
-                            Barcode = x.Barcode,
-                            Naam = x.Naam,
-                            Aantal = x.Aantal,
-                            Prijs = x.Prijs,
-                            Btw = x.Btw
-                        }).ToList()
-                    );
+                    var snapshot = ticket.Select(x => new TicketItem
+                    {
+                        Barcode = x.Barcode,
+                        Naam = x.Naam,
+                        Aantal = x.Aantal,
+                        Prijs = x.Prijs,
+                        Btw = x.Btw
+                    }).ToList();
+
+                    geparkeerdeTickets.Add(snapshot);
+
+                    undoStack.Push(() =>
+                    {
+                        geparkeerdeTickets.Remove(snapshot);
+                        ticket = snapshot;
+                    });
                     Logger.Log($"PARKEREN: Ticket geparkeerd met {ticket.Count} items");
 
                     ticket = new List<TicketItem>();
