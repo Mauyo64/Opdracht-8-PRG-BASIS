@@ -1,0 +1,12 @@
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\bin\Debug\net10.0\WinkelDomein.deps.json
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\bin\Debug\net10.0\WinkelDomein.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\bin\Debug\net10.0\WinkelDomein.pdb
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.AssemblyInfoInputs.cache
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.AssemblyInfo.cs
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.csproj.CoreCompileInputs.cache
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.sourcelink.json
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\refint\WinkelDomein.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\WinkelDomein.pdb
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\WinkelDomein\obj\Debug\net10.0\ref\WinkelDomein.dll
