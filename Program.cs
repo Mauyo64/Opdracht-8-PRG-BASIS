@@ -119,7 +119,6 @@ public class Program
 
             string text = CaptureReceipt(Console.WriteLine, ticket, subtotal, btw, totaal, betaalInfo);
 
-            // opslaan naar bestand
             File.WriteAllText($"kassaticket-{referentie}.txt", text);
         }
     
@@ -461,6 +460,8 @@ public class Program
             }
         }
     }
+
+
 
 
 
