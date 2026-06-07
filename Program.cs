@@ -3,6 +3,7 @@ using BetaalSysteemMock;
 
 namespace KassaApp;
 
+
 //ITEMS OP HET TICKET//
 public class TicketItem
 {
@@ -25,6 +26,7 @@ public static class ProductCatalogus
 }
 
 public class Program
+
 {
     public static void Main(string[] args)
     {
@@ -59,7 +61,7 @@ public class Program
 
                 decimal TotaalminBTW = 0;
                 decimal BTW = 0;
-    
+
                 foreach (var item in ticket)
                 {
                     TotaalminBTW += item.Prijs * item.Aantal;
@@ -87,7 +89,12 @@ public class Program
 
             Console.WriteLine();
             Console.Write("> ");
+            
             string invoer = Console.ReadLine();
+
+
+            
+            //BARCODE LEZEN//
 
             if (string.IsNullOrWhiteSpace(invoer))
                 continue;
@@ -114,12 +121,26 @@ public class Program
                     ticket.Add(newItem);
                     lastItem = newItem;
                 }
+                continue;
             }
-            else
+
+            // AANTAL EXTRA TOEVOEGEN//
+            if (int.TryParse(invoer, out int extraAantal))
             {
-                Console.WriteLine("Onbekende barcode.");
-                Console.ReadKey();
+                if (lastItem != null)
+                {
+                    lastItem.Aantal += extraAantal;
+                }
+                else
+                {
+                    Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                    Console.ReadKey();
+                }
+                continue;
             }
+
+
+
         }
     }
 }
