@@ -26,17 +26,77 @@ public static class ProductCatalogus
 }
 
 public class Program
-
 {
+    static void PrintBon(List<TicketItem> ticket, IBetaalTerminal terminal)
+    {
+        decimal subtotal = ticket.Sum(x => x.Prijs * x.Aantal);
+        decimal btw = ticket.Sum(x => x.Prijs * x.Aantal * (x.Btw / 100));
+        decimal totaal = subtotal + btw;
+
+        Console.WriteLine("╔══════════════════════════════╗");
+        Console.WriteLine("║       BETAALTERMINAL        ║");
+        Console.WriteLine("╠══════════════════════════════╣");
+        Console.WriteLine($"║ Bedrag: € {totaal,10:F2}      ║");
+        Console.WriteLine("║ Bied uw kaart aan...        ║");
+        Console.WriteLine("╚══════════════════════════════╝");
+
+        Thread.Sleep(500);
+
+        BetaalDetails? resultaat = terminal.VerzoekBetaling(totaal, "Warenhuis Overflow");
+
+        if (resultaat == null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Betaling geweigerd.");
+            Console.ResetColor();
+            Console.ReadKey();
+            return;
+        }
+
+        Console.Clear();
+        Console.WriteLine("==========================================");
+        Console.WriteLine("            WARENHUIS OVERFLOW");
+        Console.WriteLine("         Stapelplein 1, 9000 Gent");
+        Console.WriteLine("           BTW: BE 0123.456.789");
+        Console.WriteLine("==========================================");
+        Console.WriteLine($"  Ticket: {DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}");
+        Console.WriteLine($"  Datum:  {DateTime.Now:yyyy-MM-dd HH:mm}");
+        Console.WriteLine("------------------------------------------");
+
+        foreach (var item in ticket)
+        {
+            Console.WriteLine($"  {item.Aantal}x {item.Naam}   € {item.Prijs * item.Aantal:F2} {item.Btw}%");
+        }
+
+        Console.WriteLine("------------------------------------------");
+        Console.WriteLine($"  Subtotaal excl. BTW:  € {subtotal:F2}");
+        Console.WriteLine($"    BTW 21%:            € {btw:F2}");
+        Console.WriteLine("------------------------------------------");
+        Console.WriteLine($"  TOTAAL:               € {totaal:F2}");
+        Console.WriteLine("==========================================");
+        Console.WriteLine($"  {resultaat.KaartType} {resultaat.KaartVariant}");
+        Console.WriteLine($"  ****{resultaat.GemaskerdKaartnummer[^4..]}");
+        Console.WriteLine("  Chip + PIN");
+        Console.WriteLine($"  Bedrag:               € {resultaat.Bedrag:F2}");
+        Console.WriteLine($"  Ref: {resultaat.TransactieReferentie}");
+        Console.WriteLine("==========================================");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(" ");
+        Console.WriteLine($"  ✓ Betaling ontvangen - €{resultaat.Bedrag:F2}");
+        Console.WriteLine(" ");
+        Console.WriteLine(" ");
+        Console.ResetColor();
+    }
+
     public static void Main(string[] args)
     {
         //STARTSCHERM + TICKET P-ADD//
+        IBetaalTerminal terminal = new MockBetaalTerminal();
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         List<TicketItem> ticket = new List<TicketItem>();
         TicketItem lastItem = null;
         while (true)
         {
-            Console.Clear();
             Console.WriteLine("==========================================");
             Console.WriteLine("            WARENHUIS OVERFLOW");
             Console.WriteLine("         Stapelplein 1, 9000 Gent");
@@ -89,7 +149,7 @@ public class Program
 
             Console.WriteLine();
             Console.Write("> ");
-            
+
             string invoer = Console.ReadLine();
 
             // VERWIJDER ITEM //
@@ -123,54 +183,73 @@ public class Program
                 Console.ReadKey();
                 continue;
             }
-
-            //BARCODE LEZEN//
-
-            if (string.IsNullOrWhiteSpace(invoer))
-                continue;
-            
-            var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
-            if (product != null)
+            // BETALEN MET KAART
+            if (invoer.Equals("K", StringComparison.OrdinalIgnoreCase))
             {
-                var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
-                if (existing != null)
+                if (ticket.Count == 0)
                 {
-                    existing.Aantal++;
-                    lastItem = existing;
-                }
-                else
-                {
-                    var newItem = new TicketItem
-                    {
-                        Barcode = product.Barcode,
-                        Naam = product.Naam,
-                        Aantal = 1,
-                        Prijs = product.Prijs,
-                        Btw = product.Btw
-                    };
-                    ticket.Add(newItem);
-                    lastItem = newItem;
-                }
-                continue;
-            }
-
-            // AANTAL EXTRA TOEVOEGEN//
-            if (int.TryParse(invoer, out int extraAantal))
-            {
-                if (lastItem != null)
-                {
-                    lastItem.Aantal += extraAantal;
-                }
-                else
-                {
-                    Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                    Console.WriteLine("Ticket is leeg.");
                     Console.ReadKey();
+                    continue;
                 }
+
+                PrintBon(ticket, terminal);
+
+                ticket = new List<TicketItem>();
+                lastItem = null;
                 continue;
             }
+        
+
+
+                //BARCODE LEZEN//
+
+                if (string.IsNullOrWhiteSpace(invoer))
+                    continue;
+
+                var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
+                if (product != null)
+                {
+                    var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
+                    if (existing != null)
+                    {
+                        existing.Aantal++;
+                        lastItem = existing;
+                    }
+                    else
+                    {
+                        var newItem = new TicketItem
+                        {
+                            Barcode = product.Barcode,
+                            Naam = product.Naam,
+                            Aantal = 1,
+                            Prijs = product.Prijs,
+                            Btw = product.Btw
+                        };
+                        ticket.Add(newItem);
+                        lastItem = newItem;
+                    }
+                    continue;
+                }
+
+                // AANTAL EXTRA TOEVOEGEN//
+                if (int.TryParse(invoer, out int extraAantal))
+                {
+                    if (lastItem != null)
+                    {
+                        lastItem.Aantal += extraAantal;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                        Console.ReadKey();
+                    }
+                    continue;
+                }
 
 
 
+            }
         }
     }
-}
+
