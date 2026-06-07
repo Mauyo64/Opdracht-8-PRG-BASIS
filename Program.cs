@@ -178,6 +178,12 @@ public class Program
 
             Console.WriteLine("==========================================");
             Console.WriteLine("");
+            
+            if (geparkeerdeTickets.Count > 0)
+{
+    Console.ForegroundColor = ConsoleColor.Cyan;
+    Console.WriteLine($"  [{geparkeerdeTickets.Count} geparkeerd]");
+    Console.ResetColor();
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
 
@@ -257,6 +263,34 @@ public class Program
         
             continue;
         }
+            // TICKET PARKEREN //
+if (invoer.Equals("P", StringComparison.OrdinalIgnoreCase))
+{
+    if (ticket.Count == 0)
+    {
+        Console.WriteLine("Geen ticket om te parkeren.");
+        Console.ReadKey();
+        continue;
+    }
+
+    geparkeerdeTickets.Add(
+        ticket.Select(x => new TicketItem
+        {
+            Barcode = x.Barcode,
+            Naam = x.Naam,
+            Aantal = x.Aantal,
+            Prijs = x.Prijs,
+            Btw = x.Btw
+        }).ToList()
+    );
+
+    ticket = new List<TicketItem>();
+    lastItem = null;
+
+    Console.ReadKey();
+    continue;
+}
+                
             //BARCODE LEZEN//
 
             if (string.IsNullOrWhiteSpace(invoer))
