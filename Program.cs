@@ -410,7 +410,13 @@ public class Program
                     {
                         if (lastItem != null)
                         {
+                            int before = lastItem.Aantal;
                             lastItem.Aantal += extraAantal;
+
+                            undoStack.Push(() =>
+                        {
+                            lastItem.Aantal = before;
+                            });
                         }
                         else
                         {
@@ -459,4 +465,6 @@ public class Program
             }
         }
     }
+
+
 
