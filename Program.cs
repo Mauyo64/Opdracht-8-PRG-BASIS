@@ -38,6 +38,46 @@ public static class Logger
 
 public class Program
 {
+    // TICKET TEMPLATE + NAAR TXT //
+    static string CaptureReceipt(Action<string> writeConsole, List<TicketItem> ticket, decimal subtotal, decimal btw, decimal totaal, string betaalInfo)
+    {
+        var sb = new System.Text.StringBuilder();
+
+        void W(string line)
+        {
+            writeConsole?.Invoke(line); 
+            sb.AppendLine(line);       
+        }
+
+        W("==========================================");
+        W("            WARENHUIS OVERFLOW");
+        W("         Stapelplein 1, 9000 Gent");
+        W("           BTW: BE 0123.456.789");
+        W("==========================================");
+        W($"  Ticket: {DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}");
+        W($"  Datum:  {DateTime.Now:yyyy-MM-dd HH:mm}");
+        W("------------------------------------------");
+
+        foreach (var item in ticket)
+        {
+            W($"  {item.Aantal}x {item.Naam}   € {(item.Prijs * item.Aantal):F2} {item.Btw}%");
+        }
+
+        W("------------------------------------------");
+        W($"  Subtotaal excl. BTW:  € {subtotal:F2}");
+        W($"    BTW 21%:            € {btw:F2}");
+        W("------------------------------------------");
+        W($"  TOTAAL:               € {totaal:F2}");
+        W("==========================================");
+        W(betaalInfo);
+        W("==========================================");
+        W("");
+        W($"  ✓ Betaling ontvangen - €{totaal:F2}");
+        W("");
+        W("");
+
+        return sb.ToString();
+    }
 
     // KAART TICKET //
     static void PrintBon(List<TicketItem> ticket, IBetaalTerminal terminal)
@@ -57,90 +97,33 @@ public class Program
 
         BetaalDetails? resultaat = terminal.VerzoekBetaling(totaal, "Warenhuis Overflow");
 
-        if (resultaat == null)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Betaling geweigerd.");
-            Console.ResetColor();
-            Console.ReadKey();
-            return;
-        }
-
         Console.Clear();
-        Console.WriteLine("==========================================");
-        Console.WriteLine("            WARENHUIS OVERFLOW");
-        Console.WriteLine("         Stapelplein 1, 9000 Gent");
-        Console.WriteLine("           BTW: BE 0123.456.789");
-        Console.WriteLine("==========================================");
-        Console.WriteLine($"  Ticket: {DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}");
-        Console.WriteLine($"  Datum:  {DateTime.Now:yyyy-MM-dd HH:mm}");
-        Console.WriteLine("------------------------------------------");
 
-        foreach (var item in ticket)
-        {
-            Console.WriteLine($"  {item.Aantal}x {item.Naam}   € {item.Prijs * item.Aantal:F2} {item.Btw}%");
-        }
+        string betaalInfo = $"  {resultaat.KaartType} {resultaat.KaartVariant}\n  ****{resultaat.GemaskerdKaartnummer[^4..]}\n  Chip + PIN\n  Bedrag:               € {totaal:F2}\n  Ref: {resultaat.TransactieReferentie}";
+        
+        string referentie = $"{DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}";
+        string text = CaptureReceipt(Console.WriteLine, ticket, subtotal, btw, totaal, betaalInfo);
 
-        Console.WriteLine("------------------------------------------");
-        Console.WriteLine($"  Subtotaal excl. BTW:  € {subtotal:F2}");
-        Console.WriteLine($"    BTW 21%:            € {btw:F2}");
-        Console.WriteLine("------------------------------------------");
-        Console.WriteLine($"  TOTAAL:               € {totaal:F2}");
-        Console.WriteLine("==========================================");
-        Console.WriteLine($"  {resultaat.KaartType} {resultaat.KaartVariant}");
-        Console.WriteLine($"  ****{resultaat.GemaskerdKaartnummer[^4..]}");
-        Console.WriteLine("  Chip + PIN");
-        Console.WriteLine($"  Bedrag:               € {totaal:F2}");
-        Console.WriteLine($"  Ref: {resultaat.TransactieReferentie}");
-        Console.WriteLine("==========================================");
-        Console.WriteLine(" ");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"  ✓ Betaling ontvangen - €{totaal:F2}");
-        Console.WriteLine(" ");
-        Console.WriteLine(" ");
-        Console.ResetColor();
+
+        File.WriteAllText($"kassaticket-{referentie}.txt", text);
     }
     // CASH TICKET //
     static void PrintCashBon(List<TicketItem> ticket)
-    {
-        decimal subtotal = ticket.Sum(x => x.Prijs * x.Aantal);
-        decimal btw = ticket.Sum(x => x.Prijs * x.Aantal * (x.Btw / 100));
-        decimal totaal = subtotal + btw;
-
-        string referentie = $"CASH-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000000, 9999999)}";
-
-        Console.WriteLine();
-        Console.WriteLine("==========================================");
-        Console.WriteLine("            WARENHUIS OVERFLOW");
-        Console.WriteLine("         Stapelplein 1, 9000 Gent");
-        Console.WriteLine("           BTW: BE 0123.456.789");
-        Console.WriteLine("==========================================");
-        Console.WriteLine($"  Ticket: {DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}");
-        Console.WriteLine($"  Datum:  {DateTime.Now:yyyy-MM-dd HH:mm}");
-        Console.WriteLine("------------------------------------------");
-
-        foreach (var item in ticket)
         {
-            Console.WriteLine($"  {item.Aantal}x {item.Naam}   € {(item.Prijs * item.Aantal):F2} {item.Btw}%");
-        }
+            decimal subtotal = ticket.Sum(x => x.Prijs * x.Aantal);
+            decimal btw = ticket.Sum(x => x.Prijs * x.Aantal * (x.Btw / 100));
+            decimal totaal = subtotal + btw;
 
-        Console.WriteLine("------------------------------------------");
-        Console.WriteLine($"  Subtotaal excl. BTW:  € {subtotal:F2}");
-        Console.WriteLine($"    BTW 21%:            € {btw:F2}");
-        Console.WriteLine("------------------------------------------");
-        Console.WriteLine($"  TOTAAL:               € {totaal:F2}");
-        Console.WriteLine("==========================================");
-        Console.WriteLine("  Contante betaling");
-        Console.WriteLine($"  Bedrag:               € {totaal:F2}");
-        Console.WriteLine($"  Ref: {referentie}");
-        Console.WriteLine("==========================================");
-        Console.WriteLine("");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"  ✓ Betaling ontvangen - €{totaal:F2}");
-        Console.WriteLine("");
-        Console.WriteLine("");
-        Console.ResetColor();
-    }
+            string referentie = $"{DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}";
+            string betaalInfo = $"  Contante betaling  Bedrag:               € {totaal:F2}\n  Ref: {referentie}";
+
+            string text = CaptureReceipt(Console.WriteLine, ticket, subtotal, btw, totaal, betaalInfo);
+
+            // opslaan naar bestand
+            File.WriteAllText($"kassaticket-{referentie}.txt", text);
+        }
+    
+
     public static void Main(string[] args)
     {
         // STARTSCHERM + TICKET P-ADD //
@@ -478,6 +461,8 @@ public class Program
             }
         }
     }
+
+
 
 
 
