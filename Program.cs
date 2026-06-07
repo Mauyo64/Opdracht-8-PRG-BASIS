@@ -27,6 +27,7 @@ public static class ProductCatalogus
 
 public class Program
 {
+    // KAART TICKET //
     static void PrintBon(List<TicketItem> ticket, IBetaalTerminal terminal)
     {
         decimal subtotal = ticket.Sum(x => x.Prijs * x.Aantal);
@@ -77,17 +78,57 @@ public class Program
         Console.WriteLine($"  {resultaat.KaartType} {resultaat.KaartVariant}");
         Console.WriteLine($"  ****{resultaat.GemaskerdKaartnummer[^4..]}");
         Console.WriteLine("  Chip + PIN");
-        Console.WriteLine($"  Bedrag:               € {resultaat.Bedrag:F2}");
+        Console.WriteLine($"  Bedrag:               € {totaal:F2}");
         Console.WriteLine($"  Ref: {resultaat.TransactieReferentie}");
         Console.WriteLine("==========================================");
-        Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine(" ");
-        Console.WriteLine($"  ✓ Betaling ontvangen - €{resultaat.Bedrag:F2}");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"  ✓ Betaling ontvangen - €{totaal:F2}");
         Console.WriteLine(" ");
         Console.WriteLine(" ");
         Console.ResetColor();
     }
+    // CASH TICKET //
+    static void PrintCashBon(List<TicketItem> ticket)
+    {
+        decimal subtotal = ticket.Sum(x => x.Prijs * x.Aantal);
+        decimal btw = ticket.Sum(x => x.Prijs * x.Aantal * (x.Btw / 100));
+        decimal totaal = subtotal + btw;
 
+        string referentie = $"CASH-{DateTime.Now:yyyyMMdd}-{Random.Shared.Next(1000000, 9999999)}";
+
+        Console.WriteLine();
+        Console.WriteLine("==========================================");
+        Console.WriteLine("            WARENHUIS OVERFLOW");
+        Console.WriteLine("         Stapelplein 1, 9000 Gent");
+        Console.WriteLine("           BTW: BE 0123.456.789");
+        Console.WriteLine("==========================================");
+        Console.WriteLine($"  Ticket: {DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff}");
+        Console.WriteLine($"  Datum:  {DateTime.Now:yyyy-MM-dd HH:mm}");
+        Console.WriteLine("------------------------------------------");
+
+        foreach (var item in ticket)
+        {
+            Console.WriteLine($"  {item.Aantal}x {item.Naam}   € {(item.Prijs * item.Aantal):F2} {item.Btw}%");
+        }
+
+        Console.WriteLine("------------------------------------------");
+        Console.WriteLine($"  Subtotaal excl. BTW:  € {subtotal:F2}");
+        Console.WriteLine($"    BTW 21%:            € {btw:F2}");
+        Console.WriteLine("------------------------------------------");
+        Console.WriteLine($"  TOTAAL:               € {totaal:F2}");
+        Console.WriteLine("==========================================");
+        Console.WriteLine("  Contante betaling");
+        Console.WriteLine($"  Bedrag:               € {totaal:F2}");
+        Console.WriteLine($"  Ref: {referentie}");
+        Console.WriteLine("==========================================");
+        Console.WriteLine("");
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"  ✓ Betaling ontvangen - €{totaal:F2}");
+        Console.WriteLine("");
+        Console.WriteLine("");
+        Console.ResetColor();
+    }
     public static void Main(string[] args)
     {
         //STARTSCHERM + TICKET P-ADD//
