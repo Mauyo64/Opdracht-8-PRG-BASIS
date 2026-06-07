@@ -3,8 +3,7 @@ using BetaalSysteemMock;
 
 namespace KassaApp;
 
-
-//ITEMS OP HET TICKET//
+// ITEMS OP HET TICKET //
 public class TicketItem
 {
     public string Barcode { get; set; }
@@ -14,7 +13,7 @@ public class TicketItem
     public decimal Btw { get; set; }
 }
 
-//OPSLAG VAN ENKELE ITEMS//
+// OPSLAG VAN ENKELE ITEMS //
 public static class ProductCatalogus
 {
     public static List<TicketItem> Producten = new()
@@ -25,8 +24,21 @@ public static class ProductCatalogus
         };
 }
 
+// BIJHOUDEN VAN UITGEVOERDE ACTIES //
+public static class Logger
+{
+    private static readonly string logBestand = "system.log";
+
+    public static void Log(string actie)
+    {
+        string lijn = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {actie}";
+        File.AppendAllText(logBestand, lijn + Environment.NewLine);
+    }
+}
+
 public class Program
 {
+
     // KAART TICKET //
     static void PrintBon(List<TicketItem> ticket, IBetaalTerminal terminal)
     {
@@ -131,11 +143,13 @@ public class Program
     }
     public static void Main(string[] args)
     {
-        //STARTSCHERM + TICKET P-ADD//
+        // STARTSCHERM + TICKET P-ADD //
         IBetaalTerminal terminal = new MockBetaalTerminal();
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         List<TicketItem> ticket = new List<TicketItem>();
         TicketItem lastItem = null;
+        List<List<TicketItem>> geparkeerdeTickets = new();
+
         while (true)
         {
             Console.WriteLine("==========================================");
@@ -176,224 +190,241 @@ public class Program
                 Console.WriteLine($"  TOTAAL:               € {Totaal:F2}");
             }
 
-            Console.WriteLine("==========================================");
-            Console.WriteLine("");
-            
+                Console.WriteLine("==========================================");
+                Console.WriteLine("");
+                Console.WriteLine("");
+
             if (geparkeerdeTickets.Count > 0)
-{
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine($"  [{geparkeerdeTickets.Count} geparkeerd]");
-    Console.ResetColor();
-
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-
-            Console.WriteLine(" <scan barcode> of [barcode]<Enter> | [aantal extra]<Enter>");
-            Console.WriteLine(" [D]<Enter> = verwijderen | [Z]<Enter> = undo-laatste");
-            Console.WriteLine(" [K]<Enter> = betalen met Kaart | [C]<Enter> = betaald met Cash");
-            Console.WriteLine(" [P]<Enter> = parkeren | [H]<Enter> = hervatten | [A]<Enter> = afbreken");
-
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.WriteLine();
-            Console.Write("> ");
-
-            string invoer = Console.ReadLine();
-
-            // VERWIJDER ITEM //
-            if (invoer.Equals("D", StringComparison.OrdinalIgnoreCase))
             {
-                if (ticket.Count == 0)
-                {
-                    Console.WriteLine("Het ticket is leeg, er is niets om te verwijderen.");
-                    Console.ReadKey();
-                    continue;
-                }
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"  [{geparkeerdeTickets.Count} geparkeerd]");
+                Console.ResetColor();
 
-                Console.Write("Barcode: ");
-                string barcodeVerwijder = Console.ReadLine();
+            }
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.WriteLine(" <scan barcode> of [barcode]<Enter> | [aantal extra]<Enter>");
+                Console.WriteLine(" [D]<Enter> = verwijderen | [Z]<Enter> = undo-laatste");
+                Console.WriteLine(" [K]<Enter> = betalen met Kaart | [C]<Enter> = betaald met Cash");
+                Console.WriteLine(" [P]<Enter> = parkeren | [H]<Enter> = hervatten | [A]<Enter> = afbreken");
 
-                var item = ticket.FirstOrDefault(x => x.Barcode == barcodeVerwijder);
-                if (item != null)
+                Console.ForegroundColor = ConsoleColor.White;
+
+                Console.WriteLine();
+                Console.Write("> ");
+
+                string invoer = Console.ReadLine();
+
+                // VERWIJDER ITEM //
+                if (invoer.Equals("D", StringComparison.OrdinalIgnoreCase))
                 {
-                    item.Aantal--;
-                    if (item.Aantal <= 0)
+                    if (ticket.Count == 0)
                     {
-                        ticket.Remove(item);
+                        Console.WriteLine("Het ticket is leeg, er is niets om te verwijderen.");
+                        Console.ReadKey();
+                        continue;
                     }
 
-                }
-                else
-                {
-                    Console.WriteLine("Geen item met die barcode gevonden op het ticket.");
-                }
+                    Console.Write("Barcode: ");
+                    string barcodeVerwijder = Console.ReadLine();
 
-                Console.ReadKey();
-                continue;
-            }
-            // BETALEN MET KAART
-            if (invoer.Equals("K", StringComparison.OrdinalIgnoreCase))
-            {
-                if (ticket.Count == 0)
-                {
-                    Console.WriteLine("Ticket is leeg.");
-                    Console.ReadKey();
-                    continue;
-                }
+                    var item = ticket.FirstOrDefault(x => x.Barcode == barcodeVerwijder);
+                    if (item != null)
+                    {
+                        item.Aantal--;
+                        Logger.Log($"VERWIJDER: {item.Naam} ({item.Barcode}) - Aantal nu {item.Aantal}");
+                        if (item.Aantal <= 0)
+                        {
+                            ticket.Remove(item);
+                            Logger.Log($"ITEM VERWIJDERD: {item.Naam} ({item.Barcode}) van ticket");
+                        }
 
-                PrintBon(ticket, terminal);
-
-                ticket = new List<TicketItem>();
-                lastItem = null;
-                continue;
-            }
-            // BETALEN MET CASH //
-            if (invoer.Equals("C", StringComparison.OrdinalIgnoreCase))
-            {
-                if (ticket.Count == 0)
-            {
-                Console.WriteLine("Ticket is leeg.");
-                Console.ReadKey();
-                continue;
-            }
-
-            PrintCashBon(ticket);
-
-            ticket = new List<TicketItem>();
-            lastItem = null;
-        
-            continue;
-        }
-            // TICKET PARKEREN //
-if (invoer.Equals("P", StringComparison.OrdinalIgnoreCase))
-{
-    if (ticket.Count == 0)
-    {
-        Console.WriteLine("Geen ticket om te parkeren.");
-        Console.ReadKey();
-        continue;
-    }
-
-    geparkeerdeTickets.Add(
-        ticket.Select(x => new TicketItem
-        {
-            Barcode = x.Barcode,
-            Naam = x.Naam,
-            Aantal = x.Aantal,
-            Prijs = x.Prijs,
-            Btw = x.Btw
-        }).ToList()
-    );
-
-    ticket = new List<TicketItem>();
-    lastItem = null;
-
-    Console.ReadKey();
-    continue;
-}
-         // TICKET HERVATTEN //
-if (invoer.Equals("H", StringComparison.OrdinalIgnoreCase))
-{
-    if (geparkeerdeTickets.Count == 0)
-    {
-        Console.WriteLine("Geen geparkeerde tickets.");
-        Console.ReadKey();
-        continue;
-    }
-
-    Console.WriteLine("  Geparkeerde tickets:");
-
-    for (int i = 0; i < geparkeerdeTickets.Count; i++)
-    {
-        int totaalAantal = geparkeerdeTickets[i].Sum(x => x.Aantal);
-        Console.WriteLine($"     {i + 1}. #{DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff} ({totaalAantal} producten)");
-    }
-
-    Console.Write("  Keuze: ");
-
-    if (int.TryParse(Console.ReadLine(), out int keuze)
-        && keuze >= 1
-        && keuze <= geparkeerdeTickets.Count)
-    {
-        ticket = geparkeerdeTickets[keuze - 1];
-        geparkeerdeTickets.RemoveAt(keuze - 1);
-
-        lastItem = ticket.LastOrDefault();
-
-    }
-    else
-    {
-        Console.WriteLine("Ongeldige keuze.");
-        Console.ReadKey();
-    }
-
-    continue;
-}
-                       
-            //BARCODE LEZEN//
-
-            if (string.IsNullOrWhiteSpace(invoer))
-            continue;
-
-            var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
-            if (product != null)
-            {
-                var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
-                if (existing != null)
-                {
-                    existing.Aantal++;
-                    lastItem = existing;
                     }
                     else
                     {
-                    var newItem = new TicketItem
-                    {
-                        Barcode = product.Barcode,
-                        Naam = product.Naam,
-                        Aantal = 1,
-                        Prijs = product.Prijs,
-                        Btw = product.Btw
-                    };
-                    ticket.Add(newItem);
-                    lastItem = newItem;
-                }
-                continue;
-            }
+                        Console.WriteLine("Geen item met die barcode gevonden op het ticket.");
+                    }
 
-            // AANTAL EXTRA TOEVOEGEN//
-            if (int.TryParse(invoer, out int extraAantal))
-            {
-                if (lastItem != null)
-                {
-                    lastItem.Aantal += extraAantal;
-                }
-                else
-                {
-                    Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
                     Console.ReadKey();
+                    continue;
                 }
-                continue;
-            }
+
+                // BETALEN MET KAART //
+                if (invoer.Equals("K", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ticket.Count == 0)
+                    {
+                        Console.WriteLine("Ticket is leeg.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    PrintBon(ticket, terminal);
+                    decimal totaal = ticket.Sum(x => x.Prijs * x.Aantal * (1 + x.Btw / 100));
+                    Logger.Log($"KAARTBETALING: €{totaal:F2} - {ticket.Count} items op ticket");
+
+                    ticket = new List<TicketItem>();
+                    lastItem = null;
+                    continue;
+                }
+
+                // BETALEN MET CASH //
+                if (invoer.Equals("C", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ticket.Count == 0)
+                    {
+                        Console.WriteLine("Ticket is leeg.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    PrintCashBon(ticket);
+                    decimal totaal = ticket.Sum(x => x.Prijs * x.Aantal * (1 + x.Btw / 100));
+                    Logger.Log($"CASHBETALING: €{totaal:F2} - {ticket.Count} items op ticket");
+
+                    ticket = new List<TicketItem>();
+                    lastItem = null;
+
+                    continue;
+                }
+
+                // TICKET PARKEREN //
+                if (invoer.Equals("P", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ticket.Count == 0)
+                    {
+                        Console.WriteLine("Geen ticket om te parkeren.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    geparkeerdeTickets.Add(
+                        ticket.Select(x => new TicketItem
+                        {
+                            Barcode = x.Barcode,
+                            Naam = x.Naam,
+                            Aantal = x.Aantal,
+                            Prijs = x.Prijs,
+                            Btw = x.Btw
+                        }).ToList()
+                    );
+                    Logger.Log($"PARKEREN: Ticket geparkeerd met {ticket.Count} items");
+
+                    ticket = new List<TicketItem>();
+                    lastItem = null;
+
+                    Console.ReadKey();
+                    continue;
+                }
+                
+                // TICKET HERVATTEN //
+                if (invoer.Equals("H", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (geparkeerdeTickets.Count == 0)
+                    {
+                        Console.WriteLine("Geen geparkeerde tickets.");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    Console.WriteLine("  Geparkeerde tickets:");
+
+                    for (int i = 0; i < geparkeerdeTickets.Count; i++)
+                    {
+                        int totaalAantal = geparkeerdeTickets[i].Sum(x => x.Aantal);
+                        Console.WriteLine($"     {i + 1}. #{DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff} ({totaalAantal} producten)");
+                    }
+
+                    Console.Write("  Keuze: ");
+
+                    if (int.TryParse(Console.ReadLine(), out int keuze)
+                        && keuze >= 1
+                        && keuze <= geparkeerdeTickets.Count)
+                    {
+                        ticket = geparkeerdeTickets[keuze - 1];
+                        geparkeerdeTickets.RemoveAt(keuze - 1);
+
+                        lastItem = ticket.LastOrDefault();
+                        Logger.Log($"HERVATTEN: Ticket #{keuze} teruggehaald met {ticket.Count} items");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ongeldige keuze.");
+                        Console.ReadKey();
+                    }
+
+                    continue;
+                }
+                
+                // BARCODE LEZEN //
+                if (string.IsNullOrWhiteSpace(invoer))
+                    continue;
+
+                var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
+                if (product != null)
+                {
+                    var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
+                    if (existing != null)
+                    {
+                        existing.Aantal++;
+                        lastItem = existing;
+                        Logger.Log($"SCAN: {existing.Naam} ({existing.Barcode}) - Aantal verhoogd naar {existing.Aantal}");
+                }
+                    else
+                    {
+                        var newItem = new TicketItem
+                        {
+                            Barcode = product.Barcode,
+                            Naam = product.Naam,
+                            Aantal = 1,
+                            Prijs = product.Prijs,
+                            Btw = product.Btw
+                        };
+                        ticket.Add(newItem);
+                        lastItem = newItem;
+                        Logger.Log($"SCAN: {newItem.Naam} ({newItem.Barcode}) toegevoegd aan ticket");
+                }
+                    continue;
+                }
+
+                // AANTAL EXTRA TOEVOEGEN//
+                if (int.TryParse(invoer, out int extraAantal))
+                {
+                    if (lastItem != null)
+                    {
+                        lastItem.Aantal += extraAantal;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                        Console.ReadKey();
+                    }
+                    continue;
+                }
+
                 // TICKET AFBREKEN //
-if (invoer.Equals("A", StringComparison.OrdinalIgnoreCase))
-{
-    if (ticket.Count == 0)
-    {
-        Console.WriteLine("Geen actief ticket om af te breken.");
-        Console.ReadKey();
-        continue;
-    }
+                if (invoer.Equals("A", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (ticket.Count == 0)
+                    {
+                        Console.WriteLine("Geen actief ticket om af te breken.");
+                        Console.ReadKey();
+                        continue;
+                    }
 
-    ticket.Clear();
-    lastItem = null;
+                    ticket.Clear();
+                    lastItem = null;
 
-    Console.ReadKey();
+                    Console.ReadKey();
 
-    continue;
-}
+                    continue;
+                }
 
 
 
+            }
         }
     }
-}
+
+
 
