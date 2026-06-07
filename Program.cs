@@ -231,16 +231,23 @@ public class Program
                     var item = ticket.FirstOrDefault(x => x.Barcode == barcodeVerwijder);
                     if (item != null)
                     {
+                        int oldAantal = item.Aantal;
+
                         item.Aantal--;
-                        Logger.Log($"VERWIJDER: {item.Naam} ({item.Barcode}) - Aantal nu {item.Aantal}");
+
+                        undoStack.Push(() =>
+                        {
+                            item.Aantal = oldAantal;
+                            if (!ticket.Contains(item))
+                                ticket.Add(item);
+                        });
+
                         if (item.Aantal <= 0)
                         {
-                            ticket.Remove(item);
-                            Logger.Log($"ITEM VERWIJDERD: {item.Naam} ({item.Barcode}) van ticket");
+                        ticket.Remove(item);
                         }
-
                     }
-                    else
+                else
                     {
                         Console.WriteLine("Geen item met die barcode gevonden op het ticket.");
                     }
