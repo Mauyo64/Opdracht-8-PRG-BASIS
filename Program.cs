@@ -373,6 +373,23 @@ if (invoer.Equals("H", StringComparison.OrdinalIgnoreCase))
                 }
                 continue;
             }
+                // TICKET AFBREKEN //
+if (invoer.Equals("A", StringComparison.OrdinalIgnoreCase))
+{
+    if (ticket.Count == 0)
+    {
+        Console.WriteLine("Geen actief ticket om af te breken.");
+        Console.ReadKey();
+        continue;
+    }
+
+    ticket.Clear();
+    lastItem = null;
+
+    Console.ReadKey();
+
+    continue;
+}
 
 
 
