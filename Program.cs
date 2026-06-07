@@ -92,8 +92,38 @@ public class Program
             
             string invoer = Console.ReadLine();
 
+            // VERWIJDER ITEM //
+            if (invoer.Equals("D", StringComparison.OrdinalIgnoreCase))
+            {
+                if (ticket.Count == 0)
+                {
+                    Console.WriteLine("Het ticket is leeg, er is niets om te verwijderen.");
+                    Console.ReadKey();
+                    continue;
+                }
 
-            
+                Console.Write("Barcode: ");
+                string barcodeVerwijder = Console.ReadLine();
+
+                var item = ticket.FirstOrDefault(x => x.Barcode == barcodeVerwijder);
+                if (item != null)
+                {
+                    item.Aantal--;
+                    if (item.Aantal <= 0)
+                    {
+                        ticket.Remove(item);
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("Geen item met die barcode gevonden op het ticket.");
+                }
+
+                Console.ReadKey();
+                continue;
+            }
+
             //BARCODE LEZEN//
 
             if (string.IsNullOrWhiteSpace(invoer))
