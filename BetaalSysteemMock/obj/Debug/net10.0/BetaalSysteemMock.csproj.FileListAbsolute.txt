@@ -1,0 +1,16 @@
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\bin\Debug\net10.0\BetaalSysteemMock.deps.json
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\bin\Debug\net10.0\BetaalSysteemMock.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\bin\Debug\net10.0\BetaalSysteemMock.pdb
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\bin\Debug\net10.0\WinkelDomein.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\bin\Debug\net10.0\WinkelDomein.pdb
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.csproj.AssemblyReference.cache
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.AssemblyInfoInputs.cache
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.AssemblyInfo.cs
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.csproj.CoreCompileInputs.cache
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.sourcelink.json
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSy.AD0A1683.Up2Date
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\refint\BetaalSysteemMock.dll
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\BetaalSysteemMock.pdb
+C:\Users\vanac\Programmeren-Basis-OEF-TASKS\Opdracht 8\BetaalSysteemMock\obj\Debug\net10.0\ref\BetaalSysteemMock.dll
