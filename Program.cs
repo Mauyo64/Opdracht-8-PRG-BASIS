@@ -240,57 +240,71 @@ public class Program
                 lastItem = null;
                 continue;
             }
-        
-
-
-                //BARCODE LEZEN//
-
-                if (string.IsNullOrWhiteSpace(invoer))
-                    continue;
-
-                var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
-                if (product != null)
-                {
-                    var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
-                    if (existing != null)
-                    {
-                        existing.Aantal++;
-                        lastItem = existing;
-                    }
-                    else
-                    {
-                        var newItem = new TicketItem
-                        {
-                            Barcode = product.Barcode,
-                            Naam = product.Naam,
-                            Aantal = 1,
-                            Prijs = product.Prijs,
-                            Btw = product.Btw
-                        };
-                        ticket.Add(newItem);
-                        lastItem = newItem;
-                    }
-                    continue;
-                }
-
-                // AANTAL EXTRA TOEVOEGEN//
-                if (int.TryParse(invoer, out int extraAantal))
-                {
-                    if (lastItem != null)
-                    {
-                        lastItem.Aantal += extraAantal;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
-                        Console.ReadKey();
-                    }
-                    continue;
-                }
-
-
-
+            // BETALEN MET CASH //
+            if (invoer.Equals("C", StringComparison.OrdinalIgnoreCase))
+            {
+                if (ticket.Count == 0)
+            {
+                Console.WriteLine("Ticket is leeg.");
+                Console.ReadKey();
+                continue;
             }
+
+            PrintCashBon(ticket);
+
+            ticket = new List<TicketItem>();
+            lastItem = null;
+        
+            continue;
+        }
+            //BARCODE LEZEN//
+
+            if (string.IsNullOrWhiteSpace(invoer))
+            continue;
+
+            var product = ProductCatalogus.Producten.FirstOrDefault(p => p.Barcode == invoer);
+            if (product != null)
+            {
+                var existing = ticket.FirstOrDefault(x => x.Barcode == product.Barcode);
+                if (existing != null)
+                {
+                    existing.Aantal++;
+                    lastItem = existing;
+                    }
+                    else
+                    {
+                    var newItem = new TicketItem
+                    {
+                        Barcode = product.Barcode,
+                        Naam = product.Naam,
+                        Aantal = 1,
+                        Prijs = product.Prijs,
+                        Btw = product.Btw
+                    };
+                    ticket.Add(newItem);
+                    lastItem = newItem;
+                }
+                continue;
+            }
+
+            // AANTAL EXTRA TOEVOEGEN//
+            if (int.TryParse(invoer, out int extraAantal))
+            {
+                if (lastItem != null)
+                {
+                    lastItem.Aantal += extraAantal;
+                }
+                else
+                {
+                    Console.WriteLine("Geen laatst gescand product om aantal aan te passen.");
+                    Console.ReadKey();
+                }
+                continue;
+            }
+
+
+
         }
     }
+}
 
