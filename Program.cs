@@ -290,7 +290,45 @@ if (invoer.Equals("P", StringComparison.OrdinalIgnoreCase))
     Console.ReadKey();
     continue;
 }
-                
+         // TICKET HERVATTEN //
+if (invoer.Equals("H", StringComparison.OrdinalIgnoreCase))
+{
+    if (geparkeerdeTickets.Count == 0)
+    {
+        Console.WriteLine("Geen geparkeerde tickets.");
+        Console.ReadKey();
+        continue;
+    }
+
+    Console.WriteLine("  Geparkeerde tickets:");
+
+    for (int i = 0; i < geparkeerdeTickets.Count; i++)
+    {
+        int totaalAantal = geparkeerdeTickets[i].Sum(x => x.Aantal);
+        Console.WriteLine($"     {i + 1}. #{DateTime.Now:yyyy.MM.dd.HH.mm.ss.fff} ({totaalAantal} producten)");
+    }
+
+    Console.Write("  Keuze: ");
+
+    if (int.TryParse(Console.ReadLine(), out int keuze)
+        && keuze >= 1
+        && keuze <= geparkeerdeTickets.Count)
+    {
+        ticket = geparkeerdeTickets[keuze - 1];
+        geparkeerdeTickets.RemoveAt(keuze - 1);
+
+        lastItem = ticket.LastOrDefault();
+
+    }
+    else
+    {
+        Console.WriteLine("Ongeldige keuze.");
+        Console.ReadKey();
+    }
+
+    continue;
+}
+                       
             //BARCODE LEZEN//
 
             if (string.IsNullOrWhiteSpace(invoer))
